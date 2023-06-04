@@ -1,0 +1,6 @@
+pinecone-client
+openai
+tiktoken
+langchain
+gdown
+chromadb
