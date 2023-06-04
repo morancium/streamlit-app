@@ -15,7 +15,6 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 from config import OPENAI_API_KEY
 
-# OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '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')
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 persist_directory="db"
 vectordb = Chroma(persist_directory=persist_directory,embedding_function=embeddings)
