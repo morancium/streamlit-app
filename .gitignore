@@ -6,3 +6,5 @@ etc
 db
 config.py
 .env
+pyvenv.cfg
+__pycache__
