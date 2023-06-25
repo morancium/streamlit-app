@@ -4,6 +4,7 @@ Lib
 Include
 etc
 db
+full_db
 config.py
 .env
 pyvenv.cfg
