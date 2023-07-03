@@ -2,22 +2,52 @@
 import os 
 import time
 import streamlit as st 
+import langchain
 from langchain.llms import OpenAI
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
+
+from gptcache import Cache
+from gptcache.manager.factory import manager_factory
+from gptcache.processor.pre import get_prompt
+from langchain.cache import GPTCache
+import hashlib
 from config import OPENAI_API_KEY
+
+from gptcache.adapter.langchain_models import LangChainLLMs
+import warnings
+
 persist_directory="full_db"
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 vectordb = Chroma(persist_directory=persist_directory,embedding_function=embeddings)
-llm = OpenAI(temperature=1, openai_api_key=OPENAI_API_KEY)
-
+llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY)
 chain = load_qa_chain(llm, chain_type="stuff")
+    
+# ''' GPTcache
+# llm = LangChainLLMs(llm = OpenAI(temperature=0, openai_api_key=OPENAI_API_KEY))
+
+# def get_hashed_name(name):
+#     return hashlib.sha256(name.encode()).hexdigest()
+
+# def init_gptcache(cache_obj: Cache, llm: str):
+#     hashed_llm = get_hashed_name(llm)
+#     cache_obj.init(
+#         pre_embedding_func=get_prompt,
+#         data_manager=manager_factory(manager="map", data_dir=f"map_cache_{hashed_llm}"),
+#     )
+
+# langchain.llm_cache = GPTCache(init_gptcache)
+# '''
+
+from langchain.cache import SQLiteCache
+langchain.llm_cache = SQLiteCache(database_path=".langchain.db")
+
 
 def final_output(query,llm=llm):
     doc_search_time_start=time.time()
-    k=4
+    k=3
     doc=vectordb.similarity_search(query,k=k)
     print("number of similar docs used: ",k)
     doc_search_time_end=time.time()
@@ -56,3 +86,13 @@ if prompt:
         print("Time taken for appending: ",source_url_appending_end-source_url_appending_start)
 
 print("---------------------------------------------------")
+# llm = LangChainLLMs(llm=OpenAI(temperature=0))
+# '''
+# chain = load_qa_chain(llm, chain_type="stuff")
+# time1=time.time()
+# query = "what is bubble chart"
+# docs=vectordb.similarity_search(query,k=2)
+# print(chain.run(input_documents=docs, question=query))
+# time2=time.time()
+# print(time2-time1) 
+# '''
