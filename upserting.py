@@ -99,9 +99,9 @@ def reset():
             })
             Meta_texts.append(body)
             # break
-        json_data = json.dumps(Meta_json, indent=4)
-        with open('output.json', 'w') as outfile:
-            json.dump(Meta_json, outfile)
+        # json_data = json.dumps(Meta_json, indent=4)
+        # with open('output.json', 'w') as outfile:
+        #     json.dump(Meta_json, outfile)
     print("Storing into the vectorstore, this might take a while...")
     for i in Meta_json:
         # Chunking
@@ -114,17 +114,6 @@ def reset():
             vectordb=Chroma.from_texts([t], embedding=embeddings,persist_directory=persist_directory,metadatas={"source":i["url"]})
             vectordb.persist()
             vectordb = None
-    print("DONE!!")
-
-# def upserting(Meta_json,persist_directory):
-#     for i in Meta_json:
-#         # Chunking
-#         doc=i["body"]
-#         texts=text_splitter.split_text(doc)
-#         for t in texts:
-#             vectordb=Chroma.from_texts([t], embedding=embeddings,persist_directory=persist_directory,metadatas={"source":i["url"]})
-#             vectordb.persist()
-#             vectordb = None
 
 if(delete):
         deleting()
@@ -167,6 +156,10 @@ if (urls):
             vectordb = None
 
 if(refresh):
+    start=time.time()
     deleting()
     reset()
+    end=time.time()
+    print("Total time taken:", end-start,"s")
+    print("DONE!!")
     pass

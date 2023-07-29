@@ -4,6 +4,9 @@ Lib
 Include
 etc
 db
+dbdb
+output.json
+output4.json
 full_db
 config.py
 .env
